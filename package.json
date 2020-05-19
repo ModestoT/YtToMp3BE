@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/ModestoT/YtToMp3BE#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "horizon-youtube-mp3": "^1.9.2"
   }
 }
