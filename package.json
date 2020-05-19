@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ModestoT/YtToMp3BE/issues"
   },
-  "homepage": "https://github.com/ModestoT/YtToMp3BE#readme"
+  "homepage": "https://github.com/ModestoT/YtToMp3BE#readme",
+  "dependencies": {
+    "horizon-youtube-mp3": "^1.9.2"
+  }
 }
