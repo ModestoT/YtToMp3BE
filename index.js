@@ -2,7 +2,9 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
-const horizon = require("horizon-youtube-mp3");
+const fs = require("fs");
+const ytdl = require("ytdl-core");
+const ffmpeg = require("fluent-ffmpeg");
 
 const PORT = process.env.PORT || 3000;
 
@@ -11,25 +13,26 @@ app.get("/", (req, res) => {
 });
 
 app.get("/convert", (req, res) => {
-	console.log(typeof req.query.s);
+	console.log(req.query.s);
+	let stream = ytdl(req.query.s, { filter: "audioonly" });
 
-	horizon.getInfo(req.query.s, (err, data) => {
-		if (err) {
-			console.log(err);
-			res.send(err);
-		} else {
-			res.send(data);
-		}
-	});
-	// horizon.download(req.query.s, res, null, null, null, false, (err, e) => {
-	// 	if (err) {
-	// 		console.log(err);
-	// 		res.send(err);
-	// 	}
+	let audio = ffmpeg(stream)
+		.audioBitrate(128)
+		.format("mp3")
+		.on("error", (e) => {
+			console.log("something went wrong with the dl: ", e);
+		})
+		.on("progress", (p) => {
+			console.log(`${p.targetSize}kb downloaded`);
+		})
+		.on("end", () => {
+			res.send("Finished dling audio!");
+		})
+		.pipe(fs.createWriteStream("output.mp3"));
 
-	// 	if (e === horizon.successType.CONVERSION_FILE_COMPLETE) {
-	// 		console.log(e);
-	// 	}
+	// let ffstream = audio.pipe();
+	// ffstream.on("data", (chunk) => {
+	// 	// res.write(chunk);
 	// });
 });
 
